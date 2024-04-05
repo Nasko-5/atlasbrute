@@ -78,15 +78,15 @@ else:
         password = generate_password(charset, password_length)
         proxy = random.choice(proxy_list)
         
-    print(f"Checking password {password} with {proxy}...")
-    try:
-        response = make_request(password, proxy)
-        
-        if response.status_code != 403:
-            print(f"Success!!  | {response.text}")
-        else:
-            print(f"Failure :( | {response.text}")
-        
-    except Exception as e:
-        print(f"Something bad happened... {e}")
-        exit()
+        print(f"Checking password {password} with {proxy}...")
+        try:
+            response = make_request(password, proxy)
+            
+            if response.status_code != 403:
+                print(f"Success!!  | {response.text}")
+            else:
+                print(f"Failure :( | {response.text}")
+            
+        except Exception as e:
+            print(f"Something bad happened... {e}")
+            exit()
