@@ -46,6 +46,8 @@ def check_pass(password, proxy):
             print(f"Success!!  | {response.text}")
         else:
             print(f"Failure :( | {response.text}")
+
+        return response
     except Exception as e:
         print(f"Something bad happened... {e}")
         exit()
@@ -57,32 +59,10 @@ if wordlist:
     for password in wordlist:
         proxy = random.choice(proxy_list)
         
-        print(f"Checking password {password} with {proxy}...")
-        try:
-            response = make_request(password, proxy)
-            
-            if response.status_code != 403:
-                print(f"Success!!  | {response.text}")
-            else:
-                print(f"Failure :( | {response.text}")
-            
-        except Exception as e:
-            print(f"Something bad happened... {e}")
-            exit()
+        check_pass(password, proxy)
 else:
     while True:
         password = passgenerator.generate_password()
         proxy = random.choice(proxy_list)
         
-        print(f"Checking password {password} with {proxy}...")
-        try:
-            response = make_request(password, proxy)
-            
-            if response.status_code != 403:
-                print(f"Success!!  | {response.text}")
-            else:
-                print(f"Failure :( | {response.text}")
-            
-        except Exception as e:
-            print(f"Something bad happened... {e}")
-            exit()
+        check_pass(password, proxy)
